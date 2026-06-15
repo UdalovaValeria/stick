@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(html|css|js|jsx|ts|tsx\\)$\")",
+      "PowerShell(Get-ChildItem -Recurse -File \"C:\\\\Users\\\\Valery\\\\Documents\\\\WebDevStudy\\\\stick\\\\froggy-focus\\\\src\" | Where-Object { $_.FullName -notmatch 'node_modules' } | Select-Object -ExpandProperty FullName; Write-Output \"---BACKEND---\"; Get-ChildItem -Recurse -File \"C:\\\\Users\\\\Valery\\\\Documents\\\\WebDevStudy\\\\stick\\\\stick-backend\\\\src\" | Select-Object -ExpandProperty FullName)"
+    ]
+  }
+}
