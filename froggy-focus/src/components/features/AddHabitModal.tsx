@@ -89,14 +89,14 @@ export const AddHabitModal = ({ isOpen, onClose }: AddHabitModalProps) => {
           />
 
           {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
-                       w-[calc(100%-2rem)] max-w-md z-50"
-          >
-            <div className="glass-card p-6">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="w-full max-w-md max-h-[90vh] overflow-y-auto"
+            >
+              <div className="glass-card p-6">
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-display text-foreground flex items-center gap-2">
@@ -219,6 +219,7 @@ export const AddHabitModal = ({ isOpen, onClose }: AddHabitModalProps) => {
               </Button>
             </div>
           </motion.div>
+        </div>
         </>
       )}
     </AnimatePresence>,
