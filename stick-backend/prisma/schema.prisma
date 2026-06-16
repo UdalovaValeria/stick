@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"   // было "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Пользователь
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  balance   Int      @default(0)
+  createdAt DateTime @default(now())
+
+  tasks       Task[]
+  rewards     Reward[]
+  habits      Habit[]
+  ideas       Idea[]
+  contacts    Contact[]
+  mindfulness Session[]
+  transactions Transaction[]
+  dailyNeeds DailyNeed[]
+}
+
+//  Облако тлеющих дел
+model Task {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  title        String
+  zone         String   @default("other")
+  status       String   @default("smoldering")
+  difficulty   String   @default("medium")
+  attemptCount Int      @default(0)
+  weight       Float    @default(1.0)
+  createdAt    DateTime @default(now())
+  completedAt  DateTime?
+}
+
+// Банка Желаний
+model Reward {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields:[userId], references: [id])
+  title       String
+  cost        Int
+  emoji       String   @default("🎁")
+  isGuilty    Boolean  @default(false)
+  status      String   @default("available")
+  createdAt   DateTime @default(now())
+}
+
+// Микро-привычки
+model Habit {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  title        String
+  icon         String   @default("💧")
+  difficulty   String   @default("easy")
+  lastCompleted DateTime? // Дата последнего выполнения (чтобы не хранить длинные серии)
+  createdAt    DateTime @default(now())
+}
+
+// Сад Идей
+model Idea {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  content     String
+  type        String   @default("thought") // book, movie, hobby...
+  status      String   @default("seed")    // seed, sprout, tree...
+  createdAt   DateTime @default(now())
+}
+
+//  Социальный мост
+model Contact {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  name         String
+  relationship String   @default("friend") // mom, dad, friend...
+  lastContact  DateTime?
+  createdAt    DateTime @default(now())
+}
+
+// Практики Осознанности
+model Session {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  technique   String   // breathing, 5-4-3-2-1
+  duration    Int      // в секундах
+  createdAt   DateTime @default(now())
+}
+
+// 📜 История баллов (Транзакции)
+model Transaction {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Int      // Количество баллов (например: 15)
+  type      String   // Тип: "earn" (заработал) или "spend" (потратил)
+  note      String?  // Заметка: "За задачу: Разобрать носки"
+  createdAt DateTime @default(now())
+}
+
+// 🔋 Базовые потребности (сохраняем каждый день)
+model DailyNeed {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  date      String   // Формат "YYYY-MM-DD", чтобы легко искать за сегодня
+  water     Int      @default(0) // Сколько стаканов выпито
+  food      Int      @default(0) // Сколько раз поел
+  rest      Int      @default(0) // Сколько раз отдохнул
+  createdAt DateTime @default(now())
+
+  // Уникальный индекс: у одного юзера может быть только ОДНА запись на конкретную дату
+  @@unique([userId, date])
+}
