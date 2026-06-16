@@ -10,6 +10,7 @@ import { ProgressRing } from '@/components/features/ProgressRing';
 import { QuickActions } from '@/components/features/QuickActions';
 import { WeeklyProgress } from '@/components/features/WeeklyProgress';
 import { UrgentContacts } from '@/components/features/UrgentContacts';
+import { FrogNudge } from '@/components/features/FrogNudge';
 
 const Index = () => (
   <div className="min-h-screen bg-background pb-24">
@@ -58,6 +59,7 @@ const Index = () => (
       </motion.footer>
     </main>
     <BottomNav />
+    <FrogNudge />
   </div>
 );
 

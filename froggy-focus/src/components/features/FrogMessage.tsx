@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -70,17 +70,20 @@ export const FrogMessage = ({
   const sticker    = FROG_STICKERS[key];
   const caption    = captionProp    ?? sticker.caption;
   const subCaption = subCaptionProp ?? sticker.subCaption;
-  const imgSrc     = `/src/assets/stickers/${sticker.file}`;
+  const imgSrc     = sticker.image;
  
-  // Автоскрытие
-  if (autoHide > 0) {
-    setTimeout(() => handleDismiss(), autoHide);
-  }
- 
-  const handleDismiss = () => {
+    const handleDismiss = () => {
     setVisible(false);
     onDismiss?.();
   };
+
+  // Автоскрытие — теперь с очисткой таймера (без утечки)
+  useEffect(() => {
+    if (autoHide > 0) {
+      const timer = setTimeout(() => setVisible(false), autoHide);
+      return () => clearTimeout(timer);
+    }
+  }, [autoHide]);
  
   // ─── TOAST ───────────────────────────────────────────────────────────────
   if (variant === 'toast') {
