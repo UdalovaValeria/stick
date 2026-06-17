@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { Sparkles, Moon, Sun, Coins, LogOut, Settings as SettingsIcon } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/useAppStore';
 
 const navLinks = [
@@ -70,8 +69,8 @@ export const Header = () => {
           
           {/*Настройки помощь*/}
           <NavLink
-              to="/help"
-              title="Помощь"
+              to="/settings"
+              title="Настройки"
               className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
           >
             <SettingsIcon className="w-4 h-4" />
