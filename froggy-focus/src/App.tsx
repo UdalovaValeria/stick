@@ -42,7 +42,7 @@ const AppInit = () => {
     if (token) {
       if (fetchUser) fetchUser();
       if (fetchTasks) fetchTasks();
-      if (fetchRewards) fetchRewards(); // Скачиваем награды!
+      if (fetchRewards) fetchRewards(); 
     }
   }, [token, fetchTasks, fetchRewards, fetchUser]);
 
@@ -78,12 +78,12 @@ const App = () => (
         <AppInit />
         <Suspense fallback={<Loading />}>
           <Routes>
-            <Route path="/"            element={<HomeOrLanding />} />
+            <Route path="/"         element={<HomeOrLanding />} />
             <Route path="/login"    element={<Login />} />
             <Route path="/register" element={<Register />} />  
 
             <Route element={<ProtectedRoute />}>
-              // вне блока ProtectedRoute:
+              {/* вне блока ProtectedRoute*/}
               <Route path="/habits"      element={<HabitsTracker />} />
               <Route path="/tasks"       element={<TaskCloud />} />
               <Route path="/rewards"     element={<Rewards />} />

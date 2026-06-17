@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Sparkles, Moon, Sun, Coins, LogOut } from 'lucide-react';
+import { Sparkles, Moon, Sun, Coins, LogOut, Settings as SettingsIcon } from 'lucide-react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/store/useAppStore';
@@ -68,6 +68,15 @@ export const Header = () => {
             {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </motion.button>
           
+          {/*Настройки помощь*/}
+          <NavLink
+              to="/help"
+              title="Помощь"
+              className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <SettingsIcon className="w-4 h-4" />
+          </NavLink>
+
           <motion.button
             whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
             onClick={handleLogout}
