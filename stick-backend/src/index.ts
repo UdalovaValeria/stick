@@ -170,6 +170,17 @@ app.get('/api/me', checkAuth, async (req: AuthRequest, res: Response): Promise<v
   }
 });
 
+// Удаление аккаунта и всех данных пользователя
+app.delete('/api/me', checkAuth, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    await prisma.user.delete({ where: { id: req.userId } });
+    res.json({ message: 'Аккаунт удалён' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Не удалось удалить аккаунт' });
+  }
+});
+
 // Запуск сервера
 app.listen(PORT, () => {
   console.log(`🐸 Магия происходит на http://localhost:${PORT}`);

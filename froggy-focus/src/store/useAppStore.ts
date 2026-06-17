@@ -56,6 +56,7 @@ interface AppState {
   login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   register: (email: string, password: string, name: string) => Promise<boolean>;
+  deleteAccount: () => Promise<boolean>;
 
   // --- МЕТОДЫ STORE ---
   updateSettings: (settings: Partial<UserSettings>) => void;
@@ -193,6 +194,18 @@ export const useAppStore = create<AppState>()(
             balance: 0,
         });
     },
+
+        deleteAccount: async () => {
+          try {
+             const { api } = await import('../api/client');
+              await api.delete('/me');
+              get().logout(); // чистим токен и локальные данные
+              return true;
+            } catch (error) {
+              console.error('Ошибка удаления аккаунта:', error);
+              return false;
+          }
+      },
 
       // --- МЕТОДЫ STORE ---
       updateSettings: (s) => set((st) => ({ user: { ...st.user, settings: { ...st.user.settings, ...s } } })),

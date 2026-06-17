@@ -30,7 +30,7 @@ model User {
 model Task {
   id           String   @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   title        String
   zone         String   @default("other")
   status       String   @default("smoldering")
@@ -45,7 +45,7 @@ model Task {
 model Reward {
   id          String   @id @default(cuid())
   userId      String
-  user        User     @relation(fields:[userId], references: [id])
+  user        User     @relation(fields:[userId], references: [id], onDelete: Cascade)
   title       String
   cost        Int
   emoji       String   @default("🎁")
@@ -58,7 +58,7 @@ model Reward {
 model Habit {
   id           String   @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   title        String
   icon         String   @default("💧")
   difficulty   String   @default("easy")
@@ -70,7 +70,7 @@ model Habit {
 model Idea {
   id          String   @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   content     String
   type        String   @default("thought") // book, movie, hobby...
   status      String   @default("seed")    // seed, sprout, tree...
@@ -81,7 +81,7 @@ model Idea {
 model Contact {
   id           String   @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
   relationship String   @default("friend") // mom, dad, friend...
   lastContact  DateTime?
@@ -92,7 +92,7 @@ model Contact {
 model Session {
   id          String   @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   technique   String   // breathing, 5-4-3-2-1
   duration    Int      // в секундах
   createdAt   DateTime @default(now())
@@ -102,7 +102,7 @@ model Session {
 model Transaction {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   amount    Int      // Количество баллов (например: 15)
   type      String   // Тип: "earn" (заработал) или "spend" (потратил)
   note      String?  // Заметка: "За задачу: Разобрать носки"
@@ -113,7 +113,7 @@ model Transaction {
 model DailyNeed {
   id        String   @id @default(cuid())
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   date      String   // Формат "YYYY-MM-DD", чтобы легко искать за сегодня
   water     Int      @default(0) // Сколько стаканов выпито
   food      Int      @default(0) // Сколько раз поел

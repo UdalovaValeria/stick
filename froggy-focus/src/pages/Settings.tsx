@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
-import { Sun, Download, RotateCcw, Sliders, Sparkles, LucideIcon } from 'lucide-react';
+import { Sun, Download, RotateCcw, Sliders, Sparkles, LucideIcon, Trash2  } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { Header } from '@/components/layout/Header';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Section = ({ title, icon: Icon, children }: any) => (
   <div className="bg-white rounded-2xl p-5 border border-frog-100 shadow-sm mb-4">
@@ -27,7 +28,8 @@ const Row = ({ label, sub, children }: any) => (
 );
 
 const Settings = () => {
-  const { user, updateSettings, updateName, exportData, resetAll } = useAppStore();
+  const { user, updateSettings, updateName, exportData, resetAll, deleteAccount } = useAppStore();
+  const navigate = useNavigate();
   const { settings } = user;
 
   const applyTheme = (theme: 'light' | 'dark' | 'system') => {
@@ -55,6 +57,17 @@ const Settings = () => {
       toast('Прогресс сброшен. Новый день, новые возможности 🐸');
     }
   };
+
+  const handleDeleteAccount = async () => {
+  if (!window.confirm('Удалить аккаунт навсегда? Все твои данные будут стёрты. Это действие нельзя отменить.')) return;
+  const ok = await deleteAccount();
+  if (ok) {
+    toast('Аккаунт удалён. Будем рады видеть тебя снова 🐸');
+    navigate('/');
+  } else {
+    toast.error('Не удалось удалить аккаунт. Попробуй позже.');
+  }
+};
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -202,6 +215,18 @@ const Settings = () => {
             </button>
           </Row>
         </Section>
+
+        {/* Аккаунт */}
+          <Section title="Аккаунт" icon={Trash2}>
+            <Row label="Удалить аккаунт" sub="Безвозвратно удалить профиль и все данные">
+              <button
+                onClick={handleDeleteAccount}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-destructive text-white text-sm font-medium hover:opacity-90 transition-opacity"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Удалить
+              </button>
+            </Row>
+          </Section>
 
         {/* Подпись */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}
