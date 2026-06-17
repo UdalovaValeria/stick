@@ -17,7 +17,9 @@ const SocialBridge   = lazy(() => import('./pages/SocialBridge'));
 const Settings       = lazy(() => import('./pages/Settings'));
 const NotFound       = lazy(() => import('./pages/NotFound'));
 const Login          = lazy(() => import('./pages/Login'));
+const Landing        = lazy(() => import('./pages/Landing'));
 const Register       = lazy(() => import('./pages/Register'));
+const Help           = lazy(() => import('./pages/Help'));
 
 const queryClient = new QueryClient();
 
@@ -62,6 +64,11 @@ const AppInit = () => {
   return null;
 };
 
+const HomeOrLanding = () => {
+  const token = useAppStore((s) => s.token);
+  return token ? <Index /> : <Landing />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -71,11 +78,12 @@ const App = () => (
         <AppInit />
         <Suspense fallback={<Loading />}>
           <Routes>
+            <Route path="/"            element={<HomeOrLanding />} />
             <Route path="/login"    element={<Login />} />
             <Route path="/register" element={<Register />} />  
 
             <Route element={<ProtectedRoute />}>
-              <Route path="/"            element={<Index />} />
+              // вне блока ProtectedRoute:
               <Route path="/habits"      element={<HabitsTracker />} />
               <Route path="/tasks"       element={<TaskCloud />} />
               <Route path="/rewards"     element={<Rewards />} />
@@ -83,6 +91,7 @@ const App = () => (
               <Route path="/ideas"       element={<IdeaGarden />} />
               <Route path="/social"      element={<SocialBridge />} />
               <Route path="/settings"    element={<Settings />} />
+              <Route path="/help"        element={<Help />} />
             </Route>
             
             <Route path="*"            element={<NotFound />} />

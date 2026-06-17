@@ -5,7 +5,8 @@ import { ru } from 'date-fns/locale';
 
 const getDayLabel = (dateStr: string) => {
   const date = parseISO(dateStr);
-  return format(date, 'EE', { locale: ru });
+  const d = format(date, 'EEEEEE', { locale: ru }); // получается всего 2 знака"пн", "вт"...
+  return d.charAt(0).toUpperCase() + d.slice(1);     // первая буква большая "Пн", "Вт"...
 };
 
 const getProgressLevel = (completed: number, total: number): 'empty' | 'low' | 'medium' | 'high' | 'full' => {

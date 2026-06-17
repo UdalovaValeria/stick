@@ -4,6 +4,7 @@ import { useAppStore } from '@/store/useAppStore';
 import { Header } from '@/components/layout/Header';
 import { BottomNav } from '@/components/layout/BottomNav';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 const Section = ({ title, icon: Icon, children }: any) => (
   <div className="bg-white rounded-2xl p-5 border border-frog-100 shadow-sm mb-4">
@@ -76,7 +77,17 @@ const Settings = () => {
           </Row>
         </Section>
 
-        {/* Тема — FIX: теперь работает */}
+        {/*Help*/}
+        <Section title="Помощь" icon={Sparkles}>
+          <Row label="Как пользоваться" sub="Краткая инструкция по приложению">
+            <Link to="/help"
+              className="text-sm px-3 py-1.5 rounded-xl bg-primary/10 text-primary font-medium hover:bg-primary/20 transition-colors">
+              Открыть
+            </Link>
+          </Row>
+        </Section>
+
+        {/* Тема  */}
         <Section title="Внешний вид" icon={Sun}>
           <Row label="Тема" sub="Выбери комфортный вид">
             <div className="flex gap-1.5">

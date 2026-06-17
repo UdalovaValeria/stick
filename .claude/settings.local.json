@@ -14,7 +14,8 @@
       "Bash(node build.js)",
       "mcp__visualize__show_widget",
       "Bash(node build_thesis.js)",
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(node -e ' *)"
     ]
   }
 }
