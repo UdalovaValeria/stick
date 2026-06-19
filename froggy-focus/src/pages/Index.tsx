@@ -11,6 +11,7 @@ import { QuickActions } from '@/components/features/QuickActions';
 import { WeeklyProgress } from '@/components/features/WeeklyProgress';
 import { UrgentContacts } from '@/components/features/UrgentContacts';
 import { FrogNudge } from '@/components/features/FrogNudge';
+import { EnergySelector } from '@/components/features/EnergySelector';
 
 const Index = () => (
   <div className="min-h-screen bg-background pb-24">
@@ -40,6 +41,11 @@ const Index = () => (
         className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="glass-card p-6"><WeeklyProgress /></div>
         <div className="glass-card p-6"><UrgentContacts /></div>
+      </motion.section>
+
+      <motion.section initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.28 }}
+        className="mb-8">
+        <EnergySelector />
       </motion.section>
 
       <motion.section initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.3 }}

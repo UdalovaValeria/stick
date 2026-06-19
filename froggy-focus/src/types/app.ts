@@ -61,6 +61,7 @@ export type DayRecord = {
   energy?: number;
   enoughPressed: boolean;
   notes?: string;
+  rating?: 'great' | 'good' | 'meh'; 
 };
 
 export type WeekRecord = {

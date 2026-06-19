@@ -79,6 +79,11 @@ interface AppState {
   getCompletedCount: () => number;
   getTotalActive: () => number;
   getWeekProgress: () => any[];
+  setDayEnergy: (energy: number) => void;
+  setDayMood: (mood: 1 | 2 | 3 | 4 | 5) => void;
+  setDayRating: (rating: 'great' | 'good' | 'meh') => void;
+  setDayNotes: (notes: string) => void;
+  getTodaySuggestedHabits: () => MicroHabit[];
 
   // Tasks
   fetchTasks: () => Promise<void>; 
@@ -250,6 +255,35 @@ export const useAppStore = create<AppState>()(
         const recs = ensureTodayRecord(st.records);
         return { records: { ...recs, [t]: { ...recs[t], enoughPressed: true } } };
       }),
+
+      setDayEnergy: (energy) => set((st) => {
+        const t = today(); const recs = ensureTodayRecord(st.records);
+        return { records: { ...recs, [t]: { ...recs[t], energy } } };
+      }),
+
+      setDayMood: (mood) => set((st) => {
+        const t = today(); const recs = ensureTodayRecord(st.records);
+        return { records: { ...recs, [t]: { ...recs[t], mood } } };
+      }),
+        
+      setDayRating: (rating) => set((st) => {
+        const t = today(); 
+        const recs = ensureTodayRecord(st.records);
+        return { records: { ...recs, [t]: { ...recs[t], rating } } };
+      }),
+
+      setDayNotes: (notes) => set((st) => {
+        const t = today(); 
+        const recs = ensureTodayRecord(st.records);
+        return { records: { ...recs, [t]: { ...recs[t], notes } } };
+      }),
+
+      getTodaySuggestedHabits: () => {
+        const t = today();
+        const energy = get().records[t]?.energy ?? 5;        // 1..10, по умолчанию 5
+        const maxCost = energy <= 3 ? 1 : energy <= 6 ? 2 : 3; // мало сил → только лёгкие
+        return get().habits.filter(h => h.isActive && h.energyCost <= maxCost);
+      },
 
       cancelEnough: () => set((st) => {
         const t = today();

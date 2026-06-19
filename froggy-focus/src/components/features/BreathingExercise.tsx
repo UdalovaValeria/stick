@@ -50,8 +50,21 @@ const PATTERNS: Record<string, Pattern> = {
   },
 };
 
+type Mood = 1 | 2 | 3 | 4 | 5;
+
+const MOODS: { value: Mood; emoji: string }[] = [
+  { value: 1, emoji: '😟' },
+  { value: 2, emoji: '😐' },
+  { value: 3, emoji: '🙂' },
+  { value: 4, emoji: '😊' },
+  { value: 5, emoji: '😄' },
+];
+
 export const BreathingExercise = () => {
   const { addSession } = useAppStore();
+
+  const [moodBefore, setMoodBefore] = useState<Mood | undefined>(undefined);
+  const [moodAfter, setMoodAfter] = useState<Mood | undefined>(undefined);
 
   const [patternKey, setPatternKey] = useState<keyof typeof PATTERNS>('square');
   const [isRunning, setIsRunning] = useState(false);
@@ -59,7 +72,7 @@ export const BreathingExercise = () => {
   const [cycleCount, setCycleCount] = useState(0);
   const [countdown, setCountdown] = useState(0);
 
-  // FIX: используем useRef для отслеживания текущей фазы — избегаем closure-бага
+  // используем useRef для отслеживания текущей фазы — избегаем closure-бага
   const phaseIndexRef = useRef(0);
   const [phaseIndex, setPhaseIndex] = useState(0);
   const startTimeRef = useRef<Date | null>(null);
@@ -75,6 +88,8 @@ export const BreathingExercise = () => {
     phaseIndexRef.current = 0;
     setPhaseIndex(0);
     startTimeRef.current = null;
+    setMoodBefore(undefined);
+    setMoodAfter(undefined);
   }, [pattern]);
 
   // Сбрасываем при смене паттерна
@@ -84,7 +99,7 @@ export const BreathingExercise = () => {
     setCountdown(pattern.phases[0].duration);
   }, [pattern]);
 
-  // FIX: основная логика таймера через ref, без closure-бага
+  //  основная логика таймера через ref, без closure-бага
   useEffect(() => {
     if (!isRunning || isComplete) return;
 
@@ -101,6 +116,7 @@ export const BreathingExercise = () => {
               if (newCount >= pattern.cycles) {
                 setIsRunning(false);
                 setIsComplete(true);
+                
                 // Записываем сессию
                 if (startTimeRef.current) {
                   const duration = Math.round((Date.now() - startTimeRef.current.getTime()) / 1000);
@@ -129,6 +145,17 @@ export const BreathingExercise = () => {
     } else {
       setIsRunning((r) => !r);
     }
+  };
+
+    const handleSaveMood = (after: Mood) => {
+    setMoodAfter(after);
+    addSession({
+      type: 'breathing',
+      startedAt: startTimeRef.current ?? new Date(),
+      completedAt: new Date(),
+      moodBefore,
+      moodAfter: after,
+    });
   };
 
   // Размер круга зависит от фазы
@@ -211,6 +238,46 @@ export const BreathingExercise = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+            {/* Завершено */}
+      <AnimatePresence>
+        {isComplete && (
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+            className="text-center mb-4 p-3 bg-primary/10 rounded-xl">
+            <p className="font-display text-base text-primary">🌟 Отлично! Ты справился(ась)!</p>
+            {moodAfter === undefined ? (
+              <>
+                <p className="text-xs text-muted-foreground mt-2 mb-2">Как ты себя чувствуешь теперь?</p>
+                <div className="flex gap-2 justify-center">
+                  {MOODS.map((m) => (
+                    <button key={m.value} onClick={() => handleSaveMood(m.value)}
+                      className="text-2xl opacity-60 hover:opacity-100 hover:scale-125 transition-transform">
+                      {m.emoji}
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p className="text-xs text-muted-foreground mt-1">Сессия сохранена 💚</p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+            {/* Настроение до */}
+      {!isRunning && !isComplete && (
+        <div className="text-center mb-4">
+          <p className="text-xs text-muted-foreground mb-2">Как ты себя чувствуешь сейчас?</p>
+          <div className="flex gap-2 justify-center">
+            {MOODS.map((m) => (
+              <button key={m.value} onClick={() => setMoodBefore(m.value)}
+                className={`text-2xl transition-transform ${moodBefore === m.value ? 'scale-125' : 'opacity-50 hover:opacity-100'}`}>
+                {m.emoji}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Управление */}
       <div className="flex gap-2 justify-center">

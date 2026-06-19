@@ -6,8 +6,14 @@ import confetti from 'canvas-confetti';
 
 import happyFrog from '@/assets/stickers/happy-frog.png';
 
+const RATING_OPTIONS = [
+  { key: 'great', emoji: '🌟', label: 'Отличный' },
+  { key: 'good',  emoji: '🙂', label: 'Хороший' },
+  { key: 'meh',   emoji: '🌧️', label: 'Так себе' },
+] as const;
+
 export const EnoughButton = () => {
-const { getTodayRecord, pressEnough, cancelEnough, getCompletedCount } = useAppStore();
+const { getTodayRecord, pressEnough, cancelEnough, getCompletedCount, setDayRating, setDayNotes } = useAppStore();
 const currentDay = getTodayRecord();
 const completedCount = getCompletedCount();
 
@@ -90,6 +96,36 @@ const completedCount = getCompletedCount();
           <Undo2 className="w-4 h-4" />
           Подожди, ещё не всё!
         </motion.button>
+
+          {/*Блок оценки дня*/}
+          <div className="mt-6">
+            <p className="text-sm text-muted-foreground mb-2">Как прошёл день?</p>
+            <div className="flex gap-2 justify-center">
+              {RATING_OPTIONS.map((o) => (
+                <button
+                  key={o.key}
+                  onClick={() => setDayRating(o.key)}
+                className={`px-4 py-2 rounded-xl border text-sm transition-all
+                  ${currentDay.rating === o.key
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'border-border text-muted-foreground hover:border-primary/50'}`}
+              >
+                {o.emoji} {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+          <div className="mt-5">
+            <p className="text-sm text-muted-foreground mb-2">Заметки</p><p className="text-sm text-muted-foreground mb-2">Пара слов о дне (необязательно)</p>
+              <textarea
+               defaultValue={currentDay.notes ?? ''}
+               onBlur={(e) => setDayNotes(e.target.value)}
+               placeholder="Что запомнилось сегодня?"
+               rows={2}
+               className="w-full p-3 rounded-xl border border-border bg-background text-sm resize-none focus:outline-none focus:border-primary"
+              />
+           </div>
       </motion.div>
     );
   }

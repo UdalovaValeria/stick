@@ -7,8 +7,9 @@ import { useAppStore } from '@/store/useAppStore';
 import { Button } from '@/components/ui/button';
 
 export const HabitList = () => {
-  const { habits } = useAppStore();
-  const activeHabits = habits.filter(h => h.isActive);
+  const { getTodaySuggestedHabits, habits } = useAppStore();
+  const activeHabits = getTodaySuggestedHabits();
+  const hasAnyActive = habits.some(h => h.isActive);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -50,11 +51,17 @@ export const HabitList = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="text-center py-8 text-muted-foreground"
-        >
+      > 
+      {hasAnyActive ? (
+        <p>Нет привычек под твой уровень энергии сегодня 💚</p>
+      ) : (
+        <>
           <p>Пока нет привычек 🐸</p>
           <p className="text-sm">Добавь первую!</p>
-        </motion.div>
+        </>
       )}
+    </motion.div>
+)}
 
       <AddHabitModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
