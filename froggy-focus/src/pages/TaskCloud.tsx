@@ -11,7 +11,7 @@ import { ru } from 'date-fns/locale';
 import confetti from 'canvas-confetti';
 
 const TaskCloud = () => {
-  const { tasks, addTask, removeTask, completeTask, getRandom, getSmolderingTasks } = useAppStore();
+  const { tasks, addTask, removeTask, completeTask, getRandom, getSmolderingTasks, getRelatedTasks } = useAppStore();
 
   const [selectedZone, setSelectedZone] = useState<TaskZone | 'all'>('all');
   const [rollResult, setRollResult] = useState<SmolderingTask | null>(null);
@@ -20,6 +20,7 @@ const TaskCloud = () => {
   const [newTitle, setNewTitle] = useState('');
   const [newZone, setNewZone] = useState<TaskZone>('other');
   const [newDifficulty, setNewDifficulty] = useState<SmolderingTask['difficulty']>('medium');
+  const [related, setRelated] = useState<SmolderingTask[]>([]);
 
   const smoldering = getSmolderingTasks(selectedZone === 'all' ? undefined : selectedZone);
   const completed = tasks.filter((t) => t.status === 'completed');
@@ -40,11 +41,12 @@ const TaskCloud = () => {
   }, [selectedZone, getRandom, getSmolderingTasks]);
 
     const handleComplete = (id: string) => {
+    const relatedTasks = getRelatedTasks(id);   // считаем ДО изменения статуса
     completeTask(id);
     setRollResult(null);
+    setRelated(relatedTasks);
     toast.success('Сделано! Баллы начислены 🎉');
 
-    // 🍀 Счастливый билетик — примерно у каждого десятого дела
     if (Math.random() < 0.1) {
       confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
       toast.success('🍀 Счастливый билетик! Лягушка тобой гордится!');
@@ -121,6 +123,31 @@ const TaskCloud = () => {
             )}
           </AnimatePresence>
         </motion.div>
+
+        {/* Цепная реакция */}
+        <AnimatePresence>
+          {related.length > 0 && (
+            <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              className="glass-card p-4 mb-4">
+              <div className="flex items-center justify-between mb-3">
+                <p className="font-display text-sm">Раз уж ты взялся — может, заодно? 🔗</p>
+                <button onClick={() => setRelated([])}><X className="w-4 h-4 text-muted-foreground" /></button>
+              </div>
+              <div className="space-y-2">
+                {related.map((t) => (
+                  <div key={t.id} className="flex items-center gap-2 p-2 rounded-xl bg-secondary/40">
+                    <span>{TASK_ZONE_LABELS[t.zone].emoji}</span>
+                    <span className="text-sm flex-1 truncate">{t.title}</span>
+                    <button onClick={() => handleComplete(t.id)}
+                      className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+                      <Check className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Фильтры по зонам */}
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">

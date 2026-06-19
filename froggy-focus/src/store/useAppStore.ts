@@ -92,6 +92,7 @@ interface AppState {
   completeTask: (id: string) => Promise<void>;
   getRandom: (zone?: TaskZone) => SmolderingTask | null;
   getSmolderingTasks: (zone?: TaskZone) => SmolderingTask[];
+  getRelatedTasks: (taskId: string) => SmolderingTask[];
 
   // Rewards
   addReward: (reward: Omit<Reward, 'id' | 'createdAt' | 'status'>) => void;
@@ -442,7 +443,14 @@ export const useAppStore = create<AppState>()(
       },
 
       getSmolderingTasks: (zone) => get().tasks.filter((t) => t.status === 'smoldering' && (!zone || t.zone === zone)),
-
+      
+      getRelatedTasks: (taskId) => {
+        const done = get().tasks.find(t => t.id === taskId);
+          if (!done) return [];
+          return get().tasks.filter(t =>
+            t.id !== taskId && t.status === 'smoldering' && t.zone === done.zone
+        ).slice(0, 3);
+      },
       // Rewards
       addReward: async (reward) => {
         try {
