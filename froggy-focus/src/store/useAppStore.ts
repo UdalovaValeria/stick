@@ -319,15 +319,20 @@ export const useAppStore = create<AppState>()(
       getTotalActive: () => get().habits.length,
 
       // ЧЕСТНАЯ РЕАЛИЗАЦИЯ PROGRESS
-      getWeekProgress: () => {
+            getWeekProgress: () => {
         const { records, habits } = get();
-        const totalActiveHabits = habits.length || 1; // защита от деления на 0
+        const totalActiveHabits = habits.length || 1;
+        const now = new Date();
+
+        // Находим понедельник текущей недели
+        const dayOfWeek = (now.getDay() + 6) % 7; // 0 = Пн, … 6 = Вс
+        const monday = new Date(now);
+        monday.setDate(now.getDate() - dayOfWeek);
+
         const weekData = [];
-        const todayDate = new Date();
-        
-        for (let i = 6; i >= 0; i--) {
-          const d = new Date(todayDate);
-          d.setDate(d.getDate() - i);
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(monday);
+          d.setDate(monday.getDate() + i);
           const dateStr = format(d, 'yyyy-MM-dd');
           const dayRecord = records[dateStr];
           let completed = 0;
@@ -336,9 +341,9 @@ export const useAppStore = create<AppState>()(
           }
           weekData.push({
             date: dateStr,
-            dayName: format(d, 'EEee'), // Короткий день недели
+            dayName: format(d, 'EEee'),
             completed,
-            total: totalActiveHabits
+            total: totalActiveHabits,
           });
         }
         return weekData;
