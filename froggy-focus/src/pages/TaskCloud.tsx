@@ -9,6 +9,8 @@ import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import confetti from 'canvas-confetti';
+import { getSeasonHint } from '@/lib/season';
+import { CloudView } from '@/components/features/CloudView';
 
 const TaskCloud = () => {
   const { tasks, addTask, removeTask, completeTask, getRandom, getSmolderingTasks, getRelatedTasks } = useAppStore();
@@ -21,9 +23,11 @@ const TaskCloud = () => {
   const [newZone, setNewZone] = useState<TaskZone>('other');
   const [newDifficulty, setNewDifficulty] = useState<SmolderingTask['difficulty']>('medium');
   const [related, setRelated] = useState<SmolderingTask[]>([]);
+  const [view, setView] = useState<'list' | 'cloud'>('list');
 
   const smoldering = getSmolderingTasks(selectedZone === 'all' ? undefined : selectedZone);
   const completed = tasks.filter((t) => t.status === 'completed');
+  const season = getSeasonHint();
 
   const handleRoll = useCallback(() => {
     const zone = selectedZone === 'all' ? undefined : selectedZone;
@@ -91,7 +95,7 @@ const TaskCloud = () => {
             ) : <Dice6 className="w-5 h-5" />}
             {isRolling ? 'Крутим...' : 'Мне повезёт! 🎲'}
           </motion.button>
-
+              <p className="text-xs text-muted-foreground mt-3">Подбираем под твою энергию сегодня 🔋</p>
           <AnimatePresence>
             {rollResult && (
               <motion.div initial={{ opacity: 0, scale: 0.9, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -167,7 +171,28 @@ const TaskCloud = () => {
           })}
         </div>
 
+        {/* Сезонная подсказка */}
+        <div className="flex items-center gap-2 p-3 mb-4 rounded-2xl bg-secondary/40 border border-border/50">
+          <span className="text-xl">{season.emoji}</span>
+          <span className="text-sm text-muted-foreground">{season.text}</span>
+        </div>
+
+                {/* Переключатель вида */}
+        <div className="flex gap-2 mb-3">
+          <button onClick={() => setView('list')}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${view === 'list' ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground'}`}>
+            Список
+          </button>
+          <button onClick={() => setView('cloud')}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${view === 'cloud' ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground'}`}>
+            ☁️ Облако
+          </button>
+        </div>
+
         {/* Список тлеющих дел */}
+        {view === 'cloud' ? (
+          <CloudView tasks={smoldering} onComplete={handleComplete} />
+        ) : (
         <div className="space-y-2 mb-4">
           <AnimatePresence>
             {smoldering.map((task, i) => (
@@ -213,6 +238,7 @@ const TaskCloud = () => {
             </div>
           )}
         </div>
+        )}
 
         {/* Добавить */}
         <AnimatePresence>

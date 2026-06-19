@@ -427,8 +427,20 @@ export const useAppStore = create<AppState>()(
       },
 
       getRandom: (zone) => {
-        const available = get().tasks.filter((t) => t.status === 'smoldering' && (!zone || t.zone === zone));
+        const todayKey = today();
+        const energy = get().records[todayKey]?.energy ?? 5;
+        const allowed = energy <= 3 ? ['easy'] : energy <= 6 ? ['easy', 'medium'] : ['easy', 'medium', 'hard'];
+
+        // сначала пробуем дела под энергию
+        let available = get().tasks.filter((t) =>
+          t.status === 'smoldering' && (!zone || t.zone === zone) && allowed.includes(t.difficulty)
+        );
+        // если под энергию ничего нет — берём любые тлеющие, чтобы рулетка не застряла
+        if (!available.length) {
+          available = get().tasks.filter((t) => t.status === 'smoldering' && (!zone || t.zone === zone));
+        }
         if (!available.length) return null;
+
         const totalWeight = available.reduce((s, t) => s + t.weight, 0);
         let r = Math.random() * totalWeight;
         let chosen = available[0];
