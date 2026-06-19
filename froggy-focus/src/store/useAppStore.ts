@@ -100,6 +100,8 @@ interface AppState {
   claimReward: (id: string) => Promise<boolean>;
   earnPoints: (amount: number, taskId?: string, note?: string) => void;
   getAffordableRewards: () => Reward[];
+  getLevel: () => { level: number; progress: number };
+  getMonthlyCompleted: () => number;
   fetchRewards: () => Promise<void>;
 
   // Contacts
@@ -528,6 +530,25 @@ export const useAppStore = create<AppState>()(
 
       getAffordableRewards: () => get().rewards.filter((r) => r.status === 'available' && r.cost <= get().balance),
 
+      getLevel: () => {
+        const earned = get().transactions
+        .filter(t => t.type === 'earn')
+        .reduce((s, t) => s + t.amount, 0);
+        const level = Math.floor(earned / 100) + 1; // каждые 100 баллов — новый уровень
+        const progress = earned % 100;              // прогресс внутри уровня, 0..99
+        return { level, progress };
+      },
+      
+      getMonthlyCompleted: () => {
+        const now = new Date();
+        return get().tasks.filter(t => {
+        if (t.status !== 'completed' || !t.completedAt) return false;
+        const d = new Date(t.completedAt);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      }).length;
+      },
+
+      getContacts: () => get().contacts,  
       // Contacts
       addContact: (contact) => set((st) => ({ contacts: [...st.contacts, { ...contact, id: makeId() }] })),
       removeContact: (id) => set((st) => ({ contacts: st.contacts.filter((c) => c.id !== id) })),

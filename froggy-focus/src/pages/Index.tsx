@@ -12,6 +12,7 @@ import { WeeklyProgress } from '@/components/features/WeeklyProgress';
 import { UrgentContacts } from '@/components/features/UrgentContacts';
 import { FrogNudge } from '@/components/features/FrogNudge';
 import { EnergySelector } from '@/components/features/EnergySelector';
+import { LevelBadge } from '@/components/features/LevelBadge';
 
 const Index = () => (
   <div className="min-h-screen bg-background pb-24">
@@ -22,6 +23,11 @@ const Index = () => (
         className="flex flex-col md:flex-row items-center gap-8 mb-8">
         <div className="flex-1"><Greeting /></div>
         <div className="flex-shrink-0"><StickerOfTheDay /></div>
+      </motion.section>
+
+      <motion.section initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.1 }}
+        className="mb-8">
+        <LevelBadge />
       </motion.section>
 
       <motion.section initial={{ opacity:0, y:20 }} animate={{ opacity:1, y:0 }} transition={{ delay:0.15 }}

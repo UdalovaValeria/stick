@@ -13,11 +13,12 @@ import magicFrog from '@/assets/stickers/magic-frog.png';
 import cozyFrog from '@/assets/stickers/cozy-frog.png';
 import confusedFrog from '@/assets/stickers/frog-confused.png';
 import angryFrog from '@/assets/stickers/frog-wizard-angry.png';
+import overstimulatedFrog from '@/assets/stickers/overstimulated-frog.png';
 
 export type FrogStickerKey =
   | 'clock' | 'coffee' | 'confused' | 'crying' | 'cute'
   | 'dreaming' | 'flower' | 'happy' | 'hocusPocus' | 'idea'
-  | 'love' | 'popcorn' | 'run' | 'scared' | 'sleepy' | 'angry';
+  | 'love' | 'popcorn' | 'run' | 'scared' | 'sleepy' | 'angry'| 'overstimulated';
 
 export type FrogStickerContext =
   | 'notification' | 'morning' | 'night' | 'reward'
@@ -144,6 +145,13 @@ export const FROG_STICKERS: Record<FrogStickerKey, FrogStickerConfig> = {
     context: 'water',
     alt: 'Сердитая лягушка',
   },
+  overstimulated: {
+    image: overstimulatedFrog,
+    caption: 'Лягушка перегружена! Пора сделать паузу и вздохнуть.',
+    subCaption: 'Отдых — это не лень, это стратегия 🧘',
+    context: 'notification',
+    alt: 'Перегруженная лягушка',
+  }
 };
 
 export const getRandomStickerByContext = (ctx: FrogStickerContext): FrogStickerKey => {

@@ -4,8 +4,9 @@ import { Gift, Coins, Plus, Zap, Heart, X, Check, Sparkles } from 'lucide-react'
 import { useAppStore } from '@/store/useAppStore';
 import { Header } from '@/components/layout/Header';
 import { BottomNav } from '@/components/layout/BottomNav';
-import { Reward, RewardType } from '@/types/app';
+import { RewardType } from '@/types/app';
 import { toast } from 'sonner';
+import { MonthlyGoal } from '@/components/features/MonthlyGoal';
 
 const Rewards = () => {
   const { rewards, balance, transactions, claimReward, addReward, removeReward, getAffordableRewards } = useAppStore();
@@ -78,6 +79,7 @@ const Rewards = () => {
             </div>
           ))}
         </div>
+       <MonthlyGoal />
 
         {/* Фильтры */}
         <div className="flex gap-2 mb-4">

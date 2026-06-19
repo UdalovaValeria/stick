@@ -11,6 +11,7 @@ import { ru } from 'date-fns/locale';
 import confetti from 'canvas-confetti';
 import { getSeasonHint } from '@/lib/season';
 import { CloudView } from '@/components/features/CloudView';
+import { FrogMessage } from '@/components/features/FrogMessage';
 
 const TaskCloud = () => {
   const { tasks, addTask, removeTask, completeTask, getRandom, getSmolderingTasks, getRelatedTasks } = useAppStore();
@@ -176,6 +177,18 @@ const TaskCloud = () => {
           <span className="text-xl">{season.emoji}</span>
           <span className="text-sm text-muted-foreground">{season.text}</span>
         </div>
+
+        {/* Щит от перегрузки */}
+        {getSmolderingTasks().length >= 12 && (
+          <div className="mb-4">
+            <FrogMessage
+              variant="card"
+              stickerKey="overstimulated"
+              caption="Облако наполняется. Это нормально — давай разгрузим 🐸"
+              subCaption="Выполни одно дело через рулетку или удали лишнее. Без вины 💚"
+            />
+          </div>
+        )}
 
                 {/* Переключатель вида */}
         <div className="flex gap-2 mb-3">
