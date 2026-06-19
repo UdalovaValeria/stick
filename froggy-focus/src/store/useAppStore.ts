@@ -531,11 +531,12 @@ export const useAppStore = create<AppState>()(
       getAffordableRewards: () => get().rewards.filter((r) => r.status === 'available' && r.cost <= get().balance),
 
       getLevel: () => {
-        const earned = get().transactions
-        .filter(t => t.type === 'earn')
-        .reduce((s, t) => s + t.amount, 0);
-        const level = Math.floor(earned / 100) + 1; // каждые 100 баллов — новый уровень
-        const progress = earned % 100;              // прогресс внутри уровня, 0..99
+        const pointsFor = (d: string) => (d === 'hard' ? 25 : d === 'medium' ? 15 : 10);
+        const earned = get().tasks
+          .filter(t => t.status === 'completed')
+          .reduce((s, t) => s + pointsFor(t.difficulty), 0);
+        const level = Math.floor(earned / 100) + 1;
+        const progress = earned % 100;
         return { level, progress };
       },
       
