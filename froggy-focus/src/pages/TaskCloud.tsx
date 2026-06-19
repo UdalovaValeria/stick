@@ -8,6 +8,7 @@ import { SmolderingTask, TaskZone, TASK_ZONE_LABELS } from '@/types/app';
 import { toast } from 'sonner';
 import { formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
+import confetti from 'canvas-confetti';
 
 const TaskCloud = () => {
   const { tasks, addTask, removeTask, completeTask, getRandom, getSmolderingTasks } = useAppStore();
@@ -38,10 +39,16 @@ const TaskCloud = () => {
     }, 1200);
   }, [selectedZone, getRandom, getSmolderingTasks]);
 
-  const handleComplete = (id: string) => {
+    const handleComplete = (id: string) => {
     completeTask(id);
     setRollResult(null);
     toast.success('Сделано! Баллы начислены 🎉');
+
+    // 🍀 Счастливый билетик — примерно у каждого десятого дела
+    if (Math.random() < 0.1) {
+      confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
+      toast.success('🍀 Счастливый билетик! Лягушка тобой гордится!');
+    }
   };
 
   const handleAdd = async () => {
@@ -158,7 +165,7 @@ const TaskCloud = () => {
                   </div>
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button onClick={() => { completeTask(task.id); toast.success('Готово! 🎉'); }}
+                  <button onClick={() => handleComplete(task.id)}
                     className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
                     <Check className="w-3.5 h-3.5" />
                   </button>
