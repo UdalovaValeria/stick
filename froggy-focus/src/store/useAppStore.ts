@@ -420,7 +420,7 @@ export const useAppStore = create<AppState>()(
             balance: st.balance + earned, // Прибавляем честные серверные баллы!
           }));
           
-          // Можно добавить toast-уведомление, если оно у тебя подключено
+          // Можно добавить toast-уведомление, если оно подключено
           // toast.success(`Выполнено! Заработано ${earned} баллов 🎉`);
           
         } catch (error) {
