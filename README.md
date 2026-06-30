@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://stick-to-my-plan.vercel.app/">
-    <img src="docs/screenshot.png" alt="Скриншот приложения Stick (to the plan)" width="820">
+    <img src="docs/screenshot.jpg" alt="Скриншот приложения Stick (to the plan)" width="820">
   </a>
   <br>
   <a href="https://stick-to-my-plan.vercel.app/"><b>▶ Открыть приложение</b></a>
