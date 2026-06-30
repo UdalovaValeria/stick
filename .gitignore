@@ -10,3 +10,6 @@ dist/
 
 # Прочее
 .DS_Store
+
+# Локальные настройки Claude Code
+.claude/
